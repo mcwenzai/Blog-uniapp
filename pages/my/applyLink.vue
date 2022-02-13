@@ -20,7 +20,7 @@
 				<text class="cuIcon-emoji text-red" style="font-size: 18px; margin-left: 15px; margin-right: 5px;"></text> 原创博客优先，技术类博客优先
 			</view>
 			<view class="action" style="margin-top: 10px;">
-				<text class="cuIcon-emoji text-red" style="font-size: 18px; margin-left: 15px; margin-right: 5px;"></text> 申请前请先添加下方文仔博客友链
+				<text class="cuIcon-emoji text-red" style="font-size: 18px; margin-left: 15px; margin-right: 5px;"></text> 申请前请先添加下方蘑菇博客友链
 			</view>
 			<view class="action" style="margin-top: 10px;" >
 				<text class="cuIcon-emoji text-red" style="font-size: 18px; margin-left: 15px; margin-right: 5px;"></text> 欢迎各位小伙伴一起互换友链~
@@ -30,7 +30,7 @@
 		<view class="box">
 			<view class="cu-bar">
 				<view class="action border-title">
-					<text class="text-xl text-bold text-blue">文仔博客</text>
+					<text class="text-xl text-bold text-blue">蘑菇博客</text>
 					<text class="bg-gradual-blue" style="width:3rem"></text>
 				</view>
 			</view>
@@ -38,13 +38,13 @@
 		
 		<view>
 			<view class="action" style="margin-top: 10px;">
-				<text class="cuIcon-edit text-red" style="font-size: 18px; margin-left: 15px; margin-right: 5px;"></text> 文仔博客
+				<text class="cuIcon-edit text-red" style="font-size: 18px; margin-left: 15px; margin-right: 5px;"></text> 蘑菇博客
 			</view>
 			<view class="action" style="margin-top: 10px;">
 				<text class="cuIcon-pic text-red" style="font-size: 18px; margin-left: 15px; margin-right: 5px;"></text> http://image.moguit.cn/favicon.png
 			</view>
 			<view class="action" style="margin-top: 10px;">
-				<text class="cuIcon-calendar text-red" style="font-size: 18px; margin-left: 15px; margin-right: 5px;"></text> 文仔博客 - 专注于技术分享的博客平台
+				<text class="cuIcon-calendar text-red" style="font-size: 18px; margin-left: 15px; margin-right: 5px;"></text> 蘑菇博客 - 专注于技术分享的博客平台
 			</view>
 			<view class="action" style="margin-top: 10px;" >
 				<text class="cuIcon-weblock text-red" style="font-size: 18px; margin-left: 15px; margin-right: 5px;"></text> http://www.moguit.cn

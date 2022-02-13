@@ -1,8 +1,8 @@
 {
-    "name" : "陌溪教你学编程",
-    "appid" : "__UNI__CFAB3C1",
-    "description" : "文仔博客 - 专注于技术分享的博客平台",
-    "versionName" : "文仔博客V0.1",
+    "name" : "前后端宝典",
+    "appid" : "__UNI__B20A211",
+    "description" : "前后端宝典 - 专注于技术分享的博客平台",
+    "versionName" : "前后端宝典V0.1",
     "versionCode" : 1,
     "transformPx" : false,
     "app-plus" : {
@@ -63,7 +63,7 @@
         }
     },
     "h5" : {
-        "title" : "文仔博客",
+        "title" : "蘑菇博客",
         "domain" : "uniapp.moguit.cn"
     },
     "mp-qq" : {

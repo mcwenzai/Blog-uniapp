@@ -6,7 +6,7 @@
 		<view class="UCenter-bg">
 			<image src="/static/logo.png" class="png" mode="widthFix" @tap="goLogin"></image>
 			<view class="text-xl" style="margin-top: 5px;">
-				文仔博客
+				蘑菇博客
 			</view>
 			<image src="../../static/images/wave.gif" mode="scaleToFill" class="gif-wave"></image>
 		</view>
