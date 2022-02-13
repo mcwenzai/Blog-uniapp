@@ -12,3 +12,7 @@ export function getNewBlog (params) {
 export function getLink (params) {
   return request.get(appConfig.WEB_API + '/index/getLink', params)  
 }
+
+export function getHotBlog (params) {
+  return request.get(appConfig.WEB_API + '/index/getHotBlog', params)  
+}

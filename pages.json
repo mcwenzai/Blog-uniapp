@@ -1,95 +1,53 @@
 {
+	"easycom": {
+		"^u-(.*)": "uview-ui/components/u-$1/u-$1.vue",
+		"^wz-(.*)": "@/components/wz-$1/wz-$1.vue"
+	},
 	"pages": [
-		//pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		// #ifdef APP-PLUS || H5
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "uni-app",
-				"enablePullDownRefresh": true
+				"navigationBarTitleText": "我的博客",
+				"enablePullDownRefresh": true,
+				"navigationStyle": "custom"
 			}
 		},
 		{
-			"path": "pages/home/home",			
+			"path": "pages/detail/detail",
 			"style": {
-				"navigationBarTitleText": "uni-app",
-				"enablePullDownRefresh": true
+				"navigationBarTitleText": "文章详情",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+								"type": "share"
+							}
+						]
+					}
+				}
 			}
 		},
 		{
-			"path": "pages/classify/home",
-			"style": {}
-		},
+            "path" : "pages/login/login",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "登陆账号",
+                "enablePullDownRefresh": false,
+				"transparentTitle": "auto"
+            }
+            
+        },
 		{
-			"path": "pages/tag/home",
-			"style": {}
-		},
-		{
-			"path": "pages/sort/home",
-			"style": {}
-		},		
-		{
-			"path": "pages/my/home",
-			"style": {}
-		},
-		{
-			"path": "pages/my/myPraise",
-			"style": {}
-		},
-		{
-			"path": "pages/my/myComment",
-			"style": {}
-		},
-		{
-			"path": "pages/my/myReply",
-			"style": {}
-		},
-		{
-			"path": "pages/my/myAppreciate",
-			"style": {}
-		},
-		{
-			"path": "pages/my/myFeedback",
-			"style": {}
-		},
-		{
-			"path": "pages/my/applyLink",
-			"style": {}
-		},
-		{
-			"path": "pages/my/about",
-			"style": {}
-		},
-		{
-			"path": "pages/my/link",
-			"style": {}
-		},
-		{
-			"path": "pages/my/myCenter",
-			"style": {}
-		},
-		{
-			"path": "pages/info/home",
-			"style": {}
-		},
-		{
-			"path": "pages/messageBoard/messageBoard",
-			"style": {}
-		},	
-		{
-			"path": "pages/search/home",
-			"style": {
-				"enablePullDownRefresh": true
-			}
-		},
-		{
-			"path": "pages/user/login",
-			"style": {}
-		},
-		{
-			"path": "pages/user/register",
-			"style": {}
+		    "path" : "pages/search/search",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "搜索文章",
+		        "enablePullDownRefresh": false
+		    }
+		    
 		}
-	],
+		// #endif
+    ],
 	"globalStyle": {
 		"mp-alipay": {
 			/* 支付宝小程序特有相关 */
@@ -98,18 +56,16 @@
 		},
 		"navigationBarBackgroundColor": "#ffffff",
 		"navigationBarTitleText": "ColorUi for UniApp",
-		"navigationStyle": "custom",
-		"navigationBarTextStyle": "white"
+		"navigationBarTextStyle": "black"
 	},
 	"usingComponts": true,
-		"condition": { //模式配置，仅开发期间生效
+	"condition": { //模式配置，仅开发期间生效
 		"current": 0, //当前激活的模式(list 的索引项)
 		"list": [{
-				"name": "表单", //模式名称
-				"path": "pages/component/form", //启动页面
-				"query": "" //启动参数
-			}
-		]
+			"name": "表单", //模式名称
+			"path": "pages/component/form", //启动页面
+			"query": "" //启动参数
+		}]
 	}
 
 }

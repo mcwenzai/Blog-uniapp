@@ -1,109 +1,236 @@
 <template>
 	<view>
-		<blogHome :isRefresh='isRefresh' v-if="PageCur=='blogHome'"></blogHome>
-		<blogSort :isRefresh='isRefresh' v-if="PageCur=='blogSort'"></blogSort>
-		<blogTag :isRefresh='isRefresh' v-if="PageCur=='blogTag'"></blogTag>
-		<blogClassify :isRefresh='isRefresh' v-if="PageCur=='blogClassify'"></blogClassify>
-		<myCenter :isRefresh='isRefresh' v-if="PageCur=='myCenter'"></myCenter>
-		<view class="cu-bar tabbar bg-white shadow foot">
-			
-			<view class="action" @click="NavChange" data-cur="blogHome">
-				<view class='cuIcon-cu-image'>
-					<image :src="'/static/tabbar/home' + [PageCur=='blogHome'?'_cur':''] + '.png'"></image>
-				</view>
-				<view :class="PageCur=='blogHome'?'text-blue':'text-gray'">首页</view>
-			</view>
-			
-			<view class="action" @click="NavChange" data-cur="blogClassify">
-				<view class='cuIcon-cu-image'>
-					<image :src="'/static/tabbar/classify' + [PageCur == 'blogClassify'?'_cur':''] + '.png'"></image>
-				</view>
-				<view :class="PageCur=='blogClassify'?'text-blue':'text-gray'">分类</view>				
-			</view>
-			<view class="action" @click="NavChange" data-cur="blogTag">
-				<view class='cuIcon-cu-image'>
-					<image :src="'/static/tabbar/tag' + [PageCur == 'blogTag'?'_cur':''] + '.png'"></image>
-				</view>
-				<view :class="PageCur=='blogTag'?'text-blue':'text-gray'">标签</view>
-			</view>
-			
-			<view class="action" @click="NavChange" data-cur="blogSort">
-				<view class='cuIcon-cu-image'>
-					<image :src="'/static/tabbar/sort' + [PageCur == 'blogSort'?'_cur':''] + '.png'"></image>
-				</view>
-				<view :class="PageCur=='blogSort'?'text-blue':'text-gray'">归档</view>
-			</view>
-
-			<view class="action" @click="NavChange" data-cur="myCenter">
-				<view class='cuIcon-cu-image'>
-					<image :src="'/static/tabbar/about' + [PageCur == 'myCenter'?'_cur':''] + '.png'"></image>
-				</view>
-				<view :class="PageCur=='myCenter'?'text-blue':'text-gray'">我的</view>
-			</view>
-						
+		<view class="search">
+			<u-search placeholder="搜索前后端博客" v-model="keyword" :clearabled="true" @focus="goSearch"/>
 		</view>
+		<wz-sticky bgColor="#fff" stickyTop="0">
+			<view class="cate">
+				<u-tabs :list="list1" @click="switchClass" />
+			</view>
+			<wz-tab class="tab-xxx" :list="activitieList" :defaultChoseInd="100" :isUseOpenList="false"
+				defaultChoseItem="推荐" @onValueChange="selectCate" v-if="isShowSubClass" />
+		</wz-sticky>
+		<wz-article :posts="blogData"></wz-article>
+		<view class="loadStyle" v-if="!isEnd && !loading">下拉加载</view>
+		<view class="loadStyle" v-if="!isEnd && loading">正在加载中</view>
+		<view class="loadStyle" v-if="isEnd">我也是有底线的~</view>
+		<view class="cu-tabbar-height"></view>
 	</view>
 </template>
 
-
 <script>
-	import {getWebConfig} from "../../api/about.js";
+	import {
+		getHotBlog,
+		getBlogByLevel
+	} from "../../api/index";
+	import {
+		getArticleByBlogSortUid,
+		getBlogSortList
+	} from "../../api/classify.js";
+	import wzTab from '@/components/wz-tab/wz-tab.vue';
 	export default {
+		components: {
+			'wz-tab': wzTab
+		},
+		props: {
+			isRefresh: {
+				type: String,
+				default: "blogHome"
+			}
+		},
 		data() {
 			return {
-				isRefresh: "",
-				PageCur: 'blogHome'
-			}
+				keyword: "",
+				blogData: [],
+				isEnd: false,
+				loading: false,
+				total: 0,
+				currentPage: 1,
+				pageSize: 20,
+				dotStyle: false,
+				activitieList: [], // 所有分类
+				cardCur: 0,
+				isCard: false,
+				keyword: '',
+				list1: [{
+						name: '热门',
+					}, {
+						name: '前端',
+					},
+					{
+						name: '后端',
+					}
+				],
+				itemByDate: [],
+				marginTop: 0,
+				isShowSubClass: false
+			};
 		},
-		onLoad(options) {
-			console.log("传递到主页的内容", options)
-			if(options.PageCur) {
-				this.PageCur = options.PageCur
-			}
-		},
-		onShow: function() {
-			console.log('显示APP')
-		},
-		onHide: function() {
-			console.log('隐藏App')
-		},
-		onPullDownRefresh() {
-			this.isRefresh =  (new Date()).getTime().toString();
-			setTimeout(function () {
-				uni.stopPullDownRefresh()
-			}, 500);
-		},
-		onShareAppMessage(res) {
-			if (res.from === 'button') {// 来自页面内分享按钮
-			  console.log(res.target)
-			}
-			return {
-			  title: '蘑菇博客',
-			  path: '/pages/index/index?PageCur=blogHome'
+		watch: {
+			isRefresh: {
+				deep: true,
+				handler(newValue, oldValue) {
+					this.newBlogData = []
+					this.getRecommendBlog()
+					this.getLevelBlog()
+				}
 			}
 		},
 		created() {
-			// this.getWebConfigData();
+			this.getRecommendBlog()
+			this.getLevelBlog()
 		},
 		methods: {
-			NavChange: function(e) {
-				this.PageCur = e.currentTarget.dataset.cur
-				console.log("跳转", this.PageCur)
+			searcBlog() {
+				console.log("搜索博客");
+				if (this.keyword == "") {
+					uni.showToast({
+						icon: "none",
+						title: "搜索内容不能为空",
+					})
+					return;
+				}
+				uni.navigateTo({
+					url: '/pages/search/home?keyword=' + this.keyword,
+				});
 			},
-			// getWebConfigData() {
-			// 	var that = this
-			// 	let params = {}
-			// 	getWebConfig(params).then(res =>{
-			// 		console.log("获取网站配置", res)
-			// 		if(res.code == "success") {
-			// 			uni.setStorageSync("webConfig", res.data)
-			// 		}
-			// 	})
-			// },
+			switchClass(index) {
+				this.blogSortList(index)
+			},
+			blogSortList(e) {
+				var that = this
+				if (e.index === 0) {
+					this.isShowSubClass = false
+					this.getRecommendBlog()
+				} else {
+					getBlogSortList().then(res => {
+						if (res.code == this.$ECode.SUCCESS) {
+							var activities = res.data
+							var activities = activities.filter(function(i) {
+								return i.content == e.index;
+							});
+							this.isShowSubClass = true
+							that.activitieList = activities
+							that.getBlogList(that.activitieList[0].uid)
+						}
+					})
+				}
+			},
+			checkCate(index) {
+				return index == 1;
+			},
+			selectCate(e) {
+				this.getBlogList(e.currentItem.uid);
+			},
+
+			goInfo(uid) {
+				uni.navigateTo({
+					url: '/pages/detail/detail?uid=' + uid
+				});
+			},
+			goSearch() {
+				uni.navigateTo({
+					url: '/pages/search/search'
+				});
+			},
+			cardSwiper(e) {
+				this.cardCur = e.detail.current
+			},
+			loadData: function() {
+				console.log("上拉加载数据", this.newBlogData.length, this.total)
+				if (this.newBlogData.length >= this.total) {
+					return;
+				}
+				this.currentPage = this.currentPage + 1;
+				this.getBlogList();
+			},
+			getLevelBlog() {
+				var that = this
+				let params = {}
+				params.level = 1;
+				params.useSort = 1;
+				getBlogByLevel(params).then(res => {
+					if (res.code == this.$ECode.SUCCESS) {
+						that.fristData = res.data.records;
+					}
+				})
+			},
+			getRecommendBlog() {
+				var that = this
+				let params = {}
+				params.currentPage = that.currentPage;
+				params.pageSize = that.pageSize;
+				that.loading = true;
+				getHotBlog(params).then(res => {
+					if (res.code == this.$ECode.SUCCESS) {
+						var newData = that.blogData.concat(res.data.records);
+						that.blogData = newData;
+						that.total = res.data.total;
+						that.currentPage = res.data.current;
+						that.pageSize = res.data.size;
+					}
+					if (that.blogData.length >= that.total) {
+						that.isEnd = true;
+					} else {
+						that.isEnd = false;
+					}
+					that.loading = false;
+				})
+			},
+			getBlogList(blogSortUid) {
+				this.selectBlogSortUid = blogSortUid;
+				var params = {};
+				params.currentPage = this.currentPage;
+				params.pageSize = this.pageSize;
+				params.blogSortUid = blogSortUid
+				this.loading = true;
+				getArticleByBlogSortUid(params).then(response => {
+					console.log("通过分类uid获取文章列表", response)
+					if (response.code == this.$ECode.SUCCESS) {
+						this.blogData = response.data.records;
+						this.currentPage = response.data.current;
+						this.pageSize = response.data.size;
+						this.total = response.data.total;
+					}
+					if (this.blogData.length >= this.total) {
+						this.isEnd = true;
+					} else {
+						this.isEnd = false;
+					}
+					this.loading = false;
+				});
+			},
 		}
 	}
 </script>
 
-<style>
+<style lang="less" scoped>
+	page {
+		background-color: #f1f3f8;
+		height: 100vh;
+	}
 
+	.search {
+		padding: 40rpx 20rpx 0rpx 20rpx;
+		background-color: #ffffff;
+	}
+
+	.cate {
+		background-color: #ffffff;
+		border-bottom: solid 1px #f1f3f8;
+	}
+
+
+	.loadStyle {
+		width: 100%;
+		height: 80rpx;
+		line-height: 80rpx;
+		text-align: center;
+		color: #999999;
+		font-size: 30rpx;
+	}
+	
+	.resulut {
+		padding: 100rpx 0rpx;
+	}
 </style>

@@ -1,6 +1,11 @@
 <script>
 	import Vue from 'vue'
 	export default {
+		globalData: {
+			user: '',
+			templates:'',
+			bloginfo:''
+		},
 		onLaunch: function() {
 			uni.getSystemInfo({
 				success: function(e) {
@@ -108,9 +113,11 @@
 	}
 </script>
 
-<style>
-	@import "colorui/main.css";
-	@import "colorui/icon.css";
+<style lang="scss">
+	/* 注意要写在第一行，同时给style标签加入lang="scss"属性 */
+
+	// @import "colorui/main.css";
+	// @import "colorui/icon.css";
 
 	.nav-list {
 		display: flex;
